@@ -1,35 +1,229 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #17181c;
+    --bg-soft: #202228;
+    --text: #f2f3f5;
+    --text-muted: #8b8f99;
+    --accent: #5ad67d;
+    --accent-2: #30c5ff;
+    --radius: 8px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    color: #fff;
-    background: #17181c;
-    font-family: sans-serif;
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    color: var(--text);
+    background: var(--bg);
+    font-family: 'Fira Sans', Arial, sans-serif;
 }
 
-header {
-    padding: 10px 30px;
+.hidden {
+    display: none !important;
 }
 
-header h1 {
-    font-size: 40px;
+.container {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* ---------- header ---------- */
+
+.header {
+    border-bottom: 1px solid #2a2c33;
+}
+
+.header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 24px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.header__title {
+    margin: 0;
+    font-size: clamp(28px, 6vw, 40px);
     font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
-footer {
-    height: 100px;
+.header__title span {
+    color: var(--accent);
+}
+
+.header__subtitle {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.sources-count {
+    color: var(--accent-2);
+    font-weight: 700;
+}
+
+/* ---------- layout ---------- */
+
+.main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding-top: 16px;
+    padding-bottom: 32px;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.search {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #33363f;
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+    color: var(--text);
+    font: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search:focus {
+    border-color: var(--accent-2);
+}
+
+.content {
+    min-width: 0;
+}
+
+.content__title {
+    margin: 0 0 8px;
+    font-size: clamp(20px, 4vw, 28px);
+    overflow-wrap: anywhere;
+}
+
+.status {
+    margin: 0 0 16px;
+    color: var(--text-muted);
+}
+
+.status.loading::after {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-left: 8px;
+    vertical-align: -2px;
+    border: 2px solid var(--accent);
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+.status.error {
+    color: #ff6b6b;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+    padding: 16px 0 8px;
+    border-top: 1px solid #2a2c33;
+}
+
+.footer__inner {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 16px;
 }
-footer .copyright {
-    font-size: 14px;
-    color: #333;
+
+.footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer a:hover {
+    color: var(--accent);
+}
+
+.footer__year {
+    color: var(--text-muted);
+}
+
+.footer__rss img {
+    display: block;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #fff;
+    transition: transform 0.2s;
+}
+
+.footer__rss:hover img {
+    transform: scale(1.1);
+}
+
+.copyright {
+    margin: 12px 0 0;
+    font-size: 12px;
+    color: #555;
     text-align: center;
 }
-footer .copyright a {
-    color: #444;
+
+.footer .copyright a {
+    color: #666;
 }
-footer .copyright a:hover {
-    color: #555;
+
+.copyright::before {
+    content: '© ';
 }
-footer .copyright:before {
-    content: '©';
+
+/* ---------- adaptive ---------- */
+
+@media (min-width: 768px) {
+    .container {
+        padding: 0 32px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .main {
+        grid-template-columns: 280px minmax(0, 1fr);
+        gap: 32px;
+        padding-top: 24px;
+    }
+
+    .sidebar {
+        position: sticky;
+        top: 16px;
+        align-self: start;
+        max-height: calc(100vh - 32px);
+    }
 }
