@@ -1,4 +1,13 @@
-import { Callback, Endpoint, HttpMethod, HttpStatus, QueryKey, QueryOptions, RequestParams } from '../../types';
+import {
+    Callback,
+    Endpoint,
+    ErrorCallback,
+    HttpMethod,
+    HttpStatus,
+    QueryKey,
+    QueryOptions,
+    RequestParams,
+} from '../../types';
 
 class Loader {
     constructor(
@@ -10,16 +19,21 @@ class Loader {
         { endpoint, options = {} }: RequestParams,
         callback: Callback<T> = (): void => {
             console.error('No callback for GET response');
-        }
+        },
+        onError: ErrorCallback = (message: string): void => console.error(message)
     ): void {
-        this.load<T>(HttpMethod.Get, endpoint, callback, options);
+        this.load<T>(HttpMethod.Get, endpoint, callback, onError, options);
     }
 
     private errorHandler(res: Response): Response {
         if (!res.ok) {
-            if (res.status === HttpStatus.Unauthorized || res.status === HttpStatus.NotFound)
+            if (
+                res.status === HttpStatus.Unauthorized ||
+                res.status === HttpStatus.NotFound ||
+                res.status === HttpStatus.TooManyRequests
+            )
                 console.log(`Sorry, but there is ${res.status} error: ${res.statusText}`);
-            throw Error(res.statusText);
+            throw Error(res.statusText || `HTTP ${res.status}`);
         }
 
         return res;
@@ -37,12 +51,21 @@ class Loader {
         return url.slice(0, -1);
     }
 
-    private load<T>(method: HttpMethod, endpoint: Endpoint, callback: Callback<T>, options: QueryOptions = {}): void {
+    private load<T>(
+        method: HttpMethod,
+        endpoint: Endpoint,
+        callback: Callback<T>,
+        onError: ErrorCallback,
+        options: QueryOptions = {}
+    ): void {
         fetch(this.makeUrl(options, endpoint), { method })
             .then((res: Response) => this.errorHandler(res))
             .then((res: Response) => res.json() as Promise<T>)
             .then((data: T) => callback(data))
-            .catch((err: unknown) => console.error(err));
+            .catch((err: unknown) => {
+                console.error(err);
+                onError(err instanceof Error ? err.message : String(err));
+            });
     }
 }
 

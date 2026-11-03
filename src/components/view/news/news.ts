@@ -31,9 +31,12 @@ class News {
             fragment.append(newsClone);
         });
 
-        const newsContainer = getElement('.news');
-        newsContainer.innerHTML = '';
-        newsContainer.appendChild(fragment);
+        this.clear();
+        getElement('.news').appendChild(fragment);
+    }
+
+    public clear(): void {
+        getElement('.news').innerHTML = '';
     }
 
     /** 2024-02-15T10:00:00Z -> 15-02-2024 */

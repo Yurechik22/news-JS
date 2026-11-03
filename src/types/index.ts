@@ -76,3 +76,16 @@ export interface RequestParams {
 export type Callback<T> = (data: T) => void;
 
 export type ErrorCallback = (message: string) => void;
+
+// ---------- view ----------
+
+export enum ViewState {
+    Idle = 'idle',
+    Loading = 'loading',
+    Ready = 'ready',
+    Empty = 'empty',
+    Error = 'error',
+}
+
+/** Only the fields of a source that the sources list really needs */
+export type SourceCard = Readonly<Pick<Source, 'id' | 'name' | 'category'>>;
